@@ -1,0 +1,177 @@
+<%- include ("../shared/header") %>
+<div class="container">
+    <div>
+        <h1>Create Todo Item</h1>
+    </div>
+    <div class="sub-container">
+        <form id="todo-form">
+            <div class="form-group" style="width: 40%">
+                <label>Date</label>
+                <input id="input-date" name="date" type="date" class="form-control" required />
+                <!-- <input id="input-date" name="date" type="date" class="form-control" /> -->
+                <span rel="date" class="text text-danger validation-msg" style="display: none;"></span>
+            </div>
+            <br />
+            <label>Detail/s : </label>
+            <table class="table" id="todo-items-form-table">
+                <thead>
+                    <tr>
+                        <th>Done?</th>
+                        <th>Time</th>
+                        <th>Name</th>
+                        <th>Short Description</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="todo-items-form-row">
+                        <td>
+                            <input type="checkbox" name="isDone" />
+                        </td>
+                        <td>
+                            <input type="time" class="form-control" name="time" required />
+                            <!-- <input type="time" class="form-control" name="time" /> -->
+                            <span rel="time" class="text text-danger validation-msg" style="display: none;"></span>
+                        </td>
+                        <td>
+                            <input type="text" class="form-control" name="name" minlength="2" maxlength="255"
+                                required />
+                            <!-- <input type="text" class="form-control" name="name" /> -->
+                            <span rel="name" class="text text-danger validation-msg" style="display: none;"></span>
+                        </td>
+                        <td>
+                            <textarea class="form-control" name="shortDescription" minlength="3" maxlength="65535"
+                                required></textarea>
+                            <!-- <textarea class="form-control" name="shortDescription" ></textarea> -->
+                            <span rel="shortDescription" class="text text-danger validation-msg"
+                                style="display: none;"></span>
+                        </td>
+                        <td>
+                            <button type="button" id="add-new-todo-item-row-btn" class="btn btn-success"><i
+                                    class="fa fa-plus"></i></button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div>
+                <button class="btn btn-success">Submit</button>
+                <a href="/todo" class="btn btn-danger">Back</a>
+            </div>
+        </form>
+    </div>
+
+</div>
+
+<script>
+    $(document).on('click', '#add-new-todo-item-row-btn', function () {
+        if (!validateTodoItemsTableForm()) return;
+        $('#todo-items-form-table tbody').append(generateTodoItemsFormRow());
+        $('#todo-items-form-table tbody tr').last().find('input[name="time"]').focus();
+    });
+
+    $(document).on('click', '.remove-todo-item-row-btn', function () {
+        const $this = $(this);
+        $this.parents('.todo-items-form-row').remove();
+    })
+
+    $(document).on('submit', '#todo-form', (e) => {
+        e.preventDefault();
+        if (!validateTodoItemsTableForm()) return;
+        let todoItems = [];
+        $('.todo-items-form-row').each(function (index, row) {
+            const $this = $(this);
+            todoItems.push({
+                index: index,
+                date: $('#input-date').val(),
+                isDone: $this.find('input[name="isDone"]').prop('checked'),
+                time: $this.find('input[name="time"]').val(),
+                name: $this.find('input[name="name"]').val(),
+                shortDescription: $this.find('textarea[name="shortDescription"]').val(),
+            })
+        })
+        let formBody = { todoItems };
+
+        $.ajax({
+            type: 'POST',
+            url: '/api/todo',
+            data: JSON.stringify(formBody),
+            contentType: "application/json",
+            beforeSend: () => showSwalLoadingMessage(),
+            success: (data) => {
+                Swal.fire({
+                    title: "Created Successfully",
+                    icon: "success",
+                    html: "Do you want to create more?",
+                    confirmButtonText: "Yes",
+                    cancelButtonText: "No, Go Back",
+                    showCancelButton: true,
+                    showCloseButton: true
+                }).then(resp => {
+                    if (resp.isConfirmed) location.reload();
+                    else location.href = "/todo";
+                });
+            },
+            error: (err) => {
+                if (err.status == 400) {
+                    handleBulkSaveValidationErrors(err.responseJSON.validationErrors)
+                    Swal.close();
+                    return;
+                }
+                handleCustomErrors(err);
+            }
+        });
+    });
+
+    const validatedInputDetails = [
+        { eventType: 'keyup', selector: 'input[name="name"]' },
+        { eventType: 'keyup', selector: 'textarea[name="shortDescription"]' },
+        { eventType: 'change', selector: 'input[name="date"]' },
+        { eventType: 'change', selector: 'input[name="time"]' }
+    ]
+
+    validatedInputDetails.forEach(validatedInputDetail => {
+        handleFormInputValueUpdate({ eventType: validatedInputDetail.eventType, selector: validatedInputDetail.selector });
+    });
+
+    function handleFormInputValueUpdate({ eventType, selector }) {
+        $(document).on(eventType, selector, function () {
+            const $validationMessageEl = $(`.validation-msg[rel=${$(this).attr('name')}]`).eq($(this).index(selector));
+            if ($validationMessageEl.is(':visible'))
+                $validationMessageEl.hide();
+        })
+    }
+
+    const validateTodoItemsTableForm = () => $('input[name="time"]').valid() && $('input[name="name"]').valid() && $('textarea[name="shortDescription"]').valid()
+
+    const generateTodoItemsFormRow = () => {
+        return `
+            <tr class="todo-items-form-row">
+                <td>
+                    <input type="checkbox" name="isDone" />
+                </td>
+                <td>
+                    <input type="time" class="form-control" name="time" required/>
+                    <span rel="time" class="text text-danger validation-msg" style="display: none;"></span>
+                </td>
+                <td>
+                    <input type="text" class="form-control" name="name" minlength="2" maxlength="255" required/>
+                    <span rel="name" class="text text-danger validation-msg" style="display: none;"></span>
+                </td>
+                <td>
+                    <textarea class="form-control" name="shortDescription" minlength="3" maxlength="65535" required></textarea>
+                    <span rel="shortDescription" class="text text-danger validation-msg" style="display: none;"></span>
+                </td>
+                <td><button type="button" class="btn btn-danger remove-todo-item-row-btn"><i class="fa fa-minus"></i></button></td>
+            </tr>
+        `;
+    }
+
+    const handleBulkSaveValidationErrors = (validationErrors) => {
+        validationErrors.forEach(validationError => {
+            $(`span.validation-msg[rel='${validationError.field}']`)
+                .eq(validationError.index)
+                .html(validationError.message).show();
+        });
+    }
+</script>
+<%- include ("../shared/footer") %>

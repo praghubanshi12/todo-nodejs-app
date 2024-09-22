@@ -1,0 +1,30 @@
+</div>
+<script>
+    const handleCustomErrors = (err) => {
+        Swal.close();
+        Swal.fire({
+            title: err.responseJSON.error || "Internal Server Error",
+            icon: "error"
+        });
+    }
+    const toggleSidebar = () => {
+        const sidebar = document.getElementById('sidebar');
+        const mainContent = document.getElementById('main-content');
+
+        sidebar.classList.toggle('collapsed');
+        mainContent.classList.toggle('collapsed');
+    }
+    const showSwalLoadingMessage = () => {
+        Swal.fire({
+            title: 'Loading...',
+            allowOutsideClick: false,
+            showConfirmButton: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+    }
+</script>
+
+</body>
+</html>

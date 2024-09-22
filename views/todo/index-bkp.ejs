@@ -1,0 +1,70 @@
+<%- include ("../shared/header") %>
+    <div class="container">
+        <div class="custom-div-comp">
+            <a href="/todo/create" class="btn btn-primary">
+                <i class="fa fa-plus"></i>
+            </a>
+        </div>
+        <div class="custom-div-comp">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <%data.forEach(row=> {%>
+                        <tr>
+                            <td><input type="checkbox" /></td>
+                            <td>
+                                <%=row.name%>
+                            </td>
+                            <td>
+                                <%=row.shortDescription%>
+                            </td>
+                            <td>
+                                <%=row.date%>
+                            </td>
+                            <td>
+                                <%=row.time%>
+                            </td>
+                            <td>
+                                <a href="/todo/edit/<%=row.id%>" class="btn btn-secondary btn-edit-todo-item" rel="<%=row.id%>">
+                                    <i class="fa fa-pencil"></i>
+                                </a>
+                                <button class="btn btn-danger btn-delete-todo-item" rel="<%=row.id%>">
+                                    <i class="fa fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    <%})%>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        $('.btn-delete-todo-item').click(function() {
+            const $this = $(this);
+            if(confirm('Are you sure to delete this item?')) {
+                const todoItemId = $(this).attr('rel');
+                $.ajax({
+                    type: 'DELETE',
+                    url: `/api/todo/${todoItemId}`,
+                    success: function (data) {
+                        alert('Deleted Successfully');
+                        location.reload();
+                    },
+                    error: function (err) {
+                        alert('Something went wrong')
+                    }
+                })
+            }
+        })
+    </script>
+    <%- include ("../shared/footer") %>

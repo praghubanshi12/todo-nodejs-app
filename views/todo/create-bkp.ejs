@@ -1,0 +1,85 @@
+<%- include ("../shared/header") %>
+<div class="custom-div-comp">
+    <form id="todo-form">
+        <div class="form-group">
+            <label>Name</label>
+            <input id="input-name" name="name" type="text" class="form-control" minlength="2" maxlength="255" required/>
+            <span class="text text-danger validation-msg" style="display: none;"></span>
+        </div>
+        <div class="form-group">
+            <label>Short Description</label>
+            <textarea id="input-shortDescription" name="shortDescription" class="form-control" minlength="3" maxlength="65535" required></textarea>
+            <span class="text text-danger validation-msg" style="display: none;"></span>
+        </div>
+        <div class="form-group">
+            <label>Date</label>
+            <input id="input-date" name="date" type="date" class="form-control" required/>
+            <span class="text text-danger validation-msg" style="display: none;"></span>
+        </div>
+        <div class="form-group">
+            <label>Time</label>
+            <input id="input-time" name="date" type="time" class="form-control" required/>
+            <span class="text text-danger validation-msg" style="display: none;"></span>
+        </div>
+        <div class="form-group">
+            <label>Done?</label>
+            <input id="input-isDone" name="isDone" type="checkbox"/>
+        </div>
+        <div>
+            <button class="btn btn-success">Submit</button>
+            <a href="/todo" class="btn btn-danger">Back</a>
+        </div>
+    </form>
+</div>
+
+<script>
+    $('#todo-form').submit((e) => {
+        e.preventDefault();
+        console.log($('#input-isDone').prop('checked'))
+        let formBody = {
+            name: $('#input-name').val(),
+            shortDescription: $('#input-shortDescription').val(),
+            date: $('#input-date').val(),
+            time: $('#input-time').val(),
+            isDone: $('#input-isDone').prop('checked'),
+        }
+        $.ajax({
+            type: 'POST',
+            url: '/api/todo',
+            data: JSON.stringify(formBody),
+            contentType: "application/json",
+            success: (data) => {
+                alert('Created Successfully');
+                location.href = "/todo";
+            },
+            error: (err) => {
+                console.log(err.status)
+                if(err.status == 400) {
+                    handleValidationErrors(err.responseJSON.validationErrors)
+                    return;
+                }
+                alert(err.responseJSON.message)
+            }
+        });
+    })
+
+    $('#input-name, #input-shortDescription').keyup(function () {
+        const validationMessageEl = $(this).parents('div.form-group').find('.validation-msg');
+        if($(validationMessageEl).is(':visible')) 
+            $(validationMessageEl).hide();
+    })
+
+    $('#input-date, #input-time').change(function () {
+        const validationMessageEl = $(this).parents('div.form-group').find('.validation-msg');
+        if($(validationMessageEl).is(':visible')) 
+            $(validationMessageEl).hide();
+    })
+
+    const handleValidationErrors = (validationErrors) => {
+        validationErrors.forEach(validationError => {
+            $(`#${validationError.fieldId}`).parents('div.form-group').find('.validation-msg')
+                .html(validationError.message).show();
+        });
+    }
+</script>
+<%- include ("../shared/footer") %>

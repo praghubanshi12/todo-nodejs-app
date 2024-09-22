@@ -1,0 +1,75 @@
+<%- include ("./shared/header") %>
+
+<%if(filterCounts.all == 0) {%>
+    <div id="no-records-message">
+        <div class="mb-4">
+            For demo purpose, do you want to add some dummy data, directly into the system? Since, you have no records yet.
+        </div>
+        <div class="mb-4">
+            <button id="dummy-data-create-btn" class="btn btn-primary">Yes</button>
+            <a href="/todo/create" class="btn btn-secondary">No, Create New</a>
+        </div>
+    </div>
+<%}%>
+
+<div class="row">
+    <div class="col-lg-4 col-md-6 mb-4">
+        <div class="widget">
+            <i class="fa fa-list-ul icon"></i>
+            <h2 style="color: #05005c"><%=filterCounts.all%></h2>
+            <strong style="color: #05005c">All</strong>
+            <div class="footer">
+                <a href="/todo" class="link">View List <i class="fa fa-arrow-right"></i></a>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4 col-md-6 mb-4">
+        <div class="widget">
+            <i class="fa fa-check-circle icon"></i>
+            <h2 style="color: #05005c"><%=filterCounts.done%></h2>
+            <strong style="color: #05005c">Done</strong>
+            <div class="footer">
+                <a href="/todo?filter=done" class="link">View List <i class="fa fa-arrow-right"></i></a>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4 col-md-6 mb-4">
+        <div class="widget">
+            <i class="fa fa-calendar-check-o icon"></i>
+            <h2 style="color: #05005c"><%=filterCounts.upcoming%></h2>
+            <strong style="color: #05005c">Upcoming</strong>
+            <div class="footer">
+                <a href="/todo?filter=upcoming" class="link">View List <i class="fa fa-arrow-right"></i></a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $('#dummy-data-create-btn').click(function () {
+        $.ajax({
+            type: 'POST',
+            url: '/api/todo/dummy',
+            beforeSend: () => showSwalLoadingMessage(),
+            success: (data) => {
+                Swal.fire({
+                    title: data.message,
+                    icon: "success",
+                    timer: 2000
+                }).then(resp => {
+                    location.reload();
+                });
+            },
+            error: (err) => {
+                if (err.status == 400) {
+                    handleBulkSaveValidationErrors(err.responseJSON.validationErrors);
+                    Swal.close();
+                    return;
+                }
+                handleCustomErrors(err);
+            }
+        });
+    })
+</script>
+
+<%- include ("./shared/footer") %>

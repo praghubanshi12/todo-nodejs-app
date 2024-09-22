@@ -1,0 +1,23 @@
+{
+  "name": "todo-nodejs-app",
+  "version": "1.0.0",
+  "description": "A simple todo app built using NodeJS, ExpressJs, MySQL, and eJS templating engine",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon -e js,ejs,html,json index.js"
+  },
+  "author": "Pranaya Raghubanshi",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.20.3",
+    "ejs": "^3.1.10",
+    "express": "^4.21.0",
+    "lodash": "^4.17.21",
+    "moment": "^2.30.1",
+    "mysql2": "^3.11.3",
+    "nodemon": "^3.1.6",
+    "sequelize": "^6.37.3",
+    "todo-nodejs-app": "file:"
+  }
+}

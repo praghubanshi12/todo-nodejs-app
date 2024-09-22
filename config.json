@@ -1,0 +1,16 @@
+{
+    "dev": {
+        "port": 8081,
+        "baseUrl": "http://localhost:8081",
+        "db": {
+            "dialect": "mysql",
+            "hostname": "localhost",
+            "timezone": "+05:45",
+            "mysql": {
+                "user": "root",
+                "password": "",
+                "dbName": "todo_app"
+            }
+        }
+    }
+}

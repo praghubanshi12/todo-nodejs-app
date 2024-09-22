@@ -1,0 +1,333 @@
+<%- include ("../shared/header") %>
+    <div class="container">
+        
+
+        <header>
+            <div style="display: flex; justify-content: space-between;">
+                <div>
+                    <a href="/todo/create" class="btn btn-primary custom-primary-btn">
+                        <i class="fa fa-plus"></i>
+                    </a>
+                </div>
+                <div>
+                    <h1>Todo List</h1>
+                </div>
+                <div>
+                    <select class="form-control" id="todo-list-filter">
+                        <option id="filter-option-all" value="">All<%= filterCounts.all> 0 ? ` (${filterCounts.all})` :
+                                '' %></option>
+                        <option id="filter-option-done" value="done" <%=filter == 'done' ? 'selected' : ''%>>Done<%= filterCounts.done> 0 ? `
+                                (${filterCounts.done})` : '' %></option>
+                        <option id="filter-option-upcoming" value="upcoming" <%=filter == 'upcoming' ? 'selected' : ''%>>Upcoming<%= filterCounts.upcoming> 0 ? `
+                                (${filterCounts.upcoming})` : '' %></option>
+                    </select>
+                </div>
+            </div>
+
+        </header>
+
+        <main>
+            <div class="card-grid" id="todo-item-dates-list-section">
+                <%if(data.length == 0) {%><h3><i>No Records Found</i></h3><%}%>
+                <%data.forEach(row=> {%>
+                    <div class="card" data-date="<%=row.date%>">
+                        <div class="card-header">
+                            <span class="card-header-main-text">
+                                <%=row.date%>
+                            </span>
+                            <span class="card-header-sub-text">
+                                <span class="card-header-todo-items-count">
+                                    <%=row.todoItems.length%>
+                                </span> Item/s
+                                <span rel="<%=row.date%>" class="btn btn-danger delete-todo-items-from-date" title="Delete all (from this date)"><i
+                                        class="fa fa-trash"></i></span>
+                            </span>
+                        </div>
+                        <div class="card-body" style="
+                            max-height: 10rem;
+                            overflow-y: scroll;
+                        ">
+                            <table class="table">
+                                <tbody>
+                                    <%row.todoItems.forEach(todoItem=> {%>
+                                        <tr>
+                                            <td><input class="todo-item-list-is-done-checkbox" rel="<%=todoItem.id%>"
+                                                    type="checkbox" <%=todoItem.isDone ? 'checked' : '' %>/></td>
+                                            <td width="30%" style="text-align: center"><span class="time">
+                                                    <%=todoItem.timeFormatted%>
+                                                </span></td>
+                                            <td style="background-color: #F6F8FF; text-align: center;"><a href="#"
+                                                    rel="<%=todoItem.id%>" class="todo-item-name">
+                                                    <%=todoItem.name%>
+                                                </a></td>
+                                            <td width="20%" style="text-align: center">
+                                                <i class="fa fa-pencil icon-edit-todo-item" title="Edit Todo Item" rel="<%=todoItem.id%>" style="padding: 5px"></i>
+                                                <i class="fa fa-trash icon-delete-todo-item" title="Delete Todo Item" rel="<%=todoItem.id%>" style="padding: 5px"></i>
+                                            </td>
+                                        </tr>
+                                        <%})%>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <%})%>
+            </div>
+            <%- include ("../todo/modal/index/detail-modal") %>
+            <%- include ("../todo/modal/index/edit-modal") %>
+        </main>
+    </div>
+
+    <script>
+        $('#todo-list-filter').change(function () {
+            $.ajax({
+                type: 'GET',
+                url: generateTodoBaseRequestUrlWithFilter("/api/todo"),
+                beforeSend: () => showSwalLoadingMessage(),
+                success: (resp) => {
+                    updateTodoItemDatesListSection(resp.data);
+                    Swal.close();
+                },
+                error: (err) => handleCustomErrors(err)
+            })
+        });
+
+        $(document).on('change', '.todo-item-list-is-done-checkbox', function () {
+            const formBody = {
+                isDone: $(this).prop('checked'),
+                id: $(this).attr('rel')
+            }
+            $.ajax({
+                type: 'PUT',
+                url: generateTodoBaseRequestUrlWithFilter("/api/todo"),
+                data: JSON.stringify(formBody),
+                contentType: "application/json",
+                beforeSend: () => showSwalLoadingMessage(),
+                success: (resp) => {
+                    if (!!resp.data) updateTodoItemDatesListSection(resp.data);
+                    if (!!resp.filterCounts) updateTodoItemsFilterCounts(resp.filterCounts);
+                    Swal.close();
+                },
+                error: (err) => handleCustomErrors(err)
+            });
+        })
+
+        $(document).on('click', '.todo-item-name', function (e) {
+            e.preventDefault();
+            const todoItemId = $(this).attr('rel');
+            $.ajax({
+                type: 'GET',
+                url: `/api/todo/${todoItemId}`,
+                beforeSend: () => showSwalLoadingMessage(),
+                success: (resp) => {
+                    $('#todo-item-detail-modal-date-text').text(resp.date);
+                    $('#todo-item-detail-modal-time-text').text(resp.timeFormatted);
+                    $('#todo-item-detail-modal-name-text').text(resp.name);
+                    $('#todo-item-detail-modal-short-description-text').text(resp.shortDescription);
+                    $('#todo-item-detail-modal-status-text').text(resp.isDone ? 'Done' : 'Not Done');
+                    $('#todo-item-detail-modal').modal('show');
+                    Swal.close();
+                },
+                error: (err) => handleCustomErrors(err)
+            })
+        });
+
+        $(document).on('click', '.icon-edit-todo-item', function () {
+            const todoItemId = $(this).attr('rel');
+            $.ajax({
+                type: 'GET',
+                url: `/api/todo/${todoItemId}`,
+                beforeSend: () => showSwalLoadingMessage(),
+                success: (resp) => {
+                    $('#edit-input-id').val(resp.id);
+                    $('#edit-input-date').val(resp.date);
+                    $('#edit-input-time').val(resp.time);
+                    $('#edit-input-name').val(resp.name);
+                    $('#edit-input-shortDescription').val(resp.shortDescription);
+                    $('#todo-item-edit-modal').modal('show');
+                    Swal.close();
+                },
+                error: (err) => handleCustomErrors(err)
+            })
+        })
+
+        $('#todo-edit-form').submit((e) => {
+            e.preventDefault();
+            const formBody = {
+                id: $('#edit-input-id').val(),
+                name: $('#edit-input-name').val(),
+                shortDescription: $('#edit-input-shortDescription').val(),
+                date: $('#edit-input-date').val(),
+                time: $('#edit-input-time').val(),
+            }
+
+            $.ajax({
+                type: 'PUT',
+                url: generateTodoBaseRequestUrlWithFilter("/api/todo"),
+                data: JSON.stringify(formBody),
+                contentType: "application/json",
+                beforeSend: () => showSwalLoadingMessage(),
+                success: (resp) => {
+                    if (!!resp.data) updateTodoItemDatesListSection(resp.data);
+                    if (!!resp.filterCounts) updateTodoItemsFilterCounts(resp.filterCounts);
+                    $('#todo-item-edit-modal').modal('hide');
+                    Swal.close();
+                    if ($(`.card[data-date='${formBody.date}']`).length) {
+                        $('html, body').animate({
+                            scrollTop: $(`.card[data-date='${formBody.date}']`).offset().top
+                        }, 1000);
+                        $(`.card[data-date='${formBody.date}']`).addClass('temporary-card-hover');
+                        setTimeout(() => {
+                            $(`.card[data-date='${formBody.date}']`).removeClass('temporary-card-hover');
+                        }, 5000)
+                    }
+                },
+                error: (err) => {
+                    if (err.status == 400) {
+                        handleValidationErrors(err.responseJSON.validationErrors);
+                        Swal.close();
+                        return;
+                    }
+                    handleCustomErrors(err);
+                }
+            });
+        });
+
+        $('#edit-input-name, #edit-input-shortDescription').keyup(function () {
+            const validationMessageEl = $(this).parents('div.form-group').find('.validation-msg');
+            if ($(validationMessageEl).is(':visible'))
+                $(validationMessageEl).hide();
+        })
+
+        $('#edit-input-date, #edit-input-time').change(function () {
+            const validationMessageEl = $(this).parents('div.form-group').find('.validation-msg');
+            if ($(validationMessageEl).is(':visible'))
+                $(validationMessageEl).hide();
+        })
+
+        $(document).on('click', '.icon-delete-todo-item', function () {
+            const $this = $(this);
+            Swal.fire({
+                title: `Are you sure to delete this todo item?`,
+                showDenyButton: true,
+                confirmButtonText: "Yes"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const todoItemId = $this.attr('rel');
+                    $.ajax({
+                        type: 'DELETE',
+                        url: generateTodoBaseRequestUrlWithFilter(`/api/todo/${todoItemId}`),
+                        beforeSend: () => showSwalLoadingMessage(),
+                        success: (resp) => {
+                            if (!!resp.data) updateTodoItemDatesListSection(resp.data);
+                            if (!!resp.filterCounts) updateTodoItemsFilterCounts(resp.filterCounts);
+                            Swal.close();
+                        },
+                        error: (err) => handleCustomErrors(err)
+                    })
+                }
+            })
+        });
+
+        $(document).on('click', '.delete-todo-items-from-date', function () {
+            const selectedDate = $(this).attr('rel');
+            const selectedFilter = $('#todo-list-filter').val() || 'all';
+            Swal.fire({
+                title: `Are you sure to delete ${selectedFilter} todo items from ${selectedDate}`,
+                showDenyButton: true,
+                confirmButtonText: "Yes"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    let deleteForDateUrl = `/api/todo/deleteForDate/${selectedDate}?filter=${$('#todo-list-filter').val().toLowerCase()}`;
+                    $.ajax({
+                        type: 'DELETE',
+                        url: deleteForDateUrl,
+                        beforeSend: () => showSwalLoadingMessage(),
+                        success: (resp) => {
+                            if (!!resp.data) updateTodoItemDatesListSection(resp.data);
+                            if (!!resp.filterCounts) updateTodoItemsFilterCounts(resp.filterCounts);
+                            Swal.close();
+                        },
+                        error: (err) => handleCustomErrors(err)
+                    })
+                }
+            });
+        });
+
+        const updateTodoItemDatesListSection = (data) => $('#todo-item-dates-list-section').html(generateTodoItemDatesGridHtml(data));
+        const updateTodoItemsFilterCounts = (filterCounts) => {
+            $('#filter-option-all').html("All" + (filterCounts.all == 0 ? '' : ` (${filterCounts.all})`));
+            $('#filter-option-done').html("Done" + (filterCounts.done == 0 ? '' : ` (${filterCounts.done})`));
+            $('#filter-option-upcoming').html("Upcoming" + (filterCounts.upcoming == 0 ? '' : ` (${filterCounts.upcoming})`));
+        }
+
+        const generateTodoItemDatesGridHtml = (data) => {
+            if (data.length == 0) return "<h3><i>No Records Found<i></h3>";
+            let result = "";
+            data.forEach(row => {
+                result += `
+                    <div class="card" data-date=${row.date}>
+                        <div class="card-header">
+                            <span class="card-header-main-text">${row.date}</span> 
+                            <span class="card-header-sub-text">
+                                ${row.todoItems.length} Item/s
+                                <span rel="${row.date}" class="btn btn-danger delete-todo-items-from-date" title="Delete all (from this date)"><i class="fa fa-trash"></i></span>
+                            </span>
+                            
+                        </div>
+                        <div class="card-body" style="
+                            max-height: 10rem;
+                            overflow-y: scroll;
+                        ">
+                            <table class="table">
+                                <tbody>
+                                    ${generateDayWiseTodoItemsListHtml(row.date, row.todoItems)}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                `;
+            });
+            return result;
+        }
+
+        const generateDayWiseTodoItemsListHtml = (date, todoItems) => {
+            let result = "";
+            todoItems.forEach(todoItem => {
+                result += `
+                    <tr>
+                        <td><input class="todo-item-list-is-done-checkbox" rel="${todoItem.id}"
+                                type="checkbox" ${todoItem.isDone ? 'checked' : '' }/></td>
+                        <td width="30%" style="text-align: center"><span class="time">
+                                ${todoItem.timeFormatted}
+                            </span></td>
+                        <td style="background-color: #F6F8FF; text-align: center;"><a href="#"
+                                rel="${todoItem.id}" class="todo-item-name">
+                                ${todoItem.name}
+                            </a></td>
+                        <td width="20%" style="text-align: center">
+                            <i class="fa fa-pencil icon-edit-todo-item" title="Edit Todo Item" rel="${todoItem.id}" style="padding: 5px"></i>
+                            <i class="fa fa-trash icon-delete-todo-item" title="Delete Todo Item" rel="${todoItem.id}" style="padding: 5px"></i>
+                        </td>
+                    </tr>
+                `;
+            })
+            return result;
+        }
+
+        const generateTodoBaseRequestUrlWithFilter = (requestUrl) => {
+            const filterValue = $('#todo-list-filter').val();
+            let filterTypes = ['done', 'upcoming'];
+            
+            if (filterTypes.includes(filterValue.toLowerCase()))
+                requestUrl = `${requestUrl}?filter=${filterValue.toLowerCase()}`;
+            return requestUrl;
+        }
+
+        const handleValidationErrors = (validationErrors) => {
+            validationErrors.forEach(validationError => {
+                $(`#edit-${validationError.fieldId}`).parents('div.form-group').find('.validation-msg')
+                    .html(validationError.message).show();
+            });
+        }
+    </script>
+    <%- include ("../shared/footer") %>

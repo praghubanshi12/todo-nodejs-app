@@ -1,0 +1,41 @@
+<div class="modal" id="todo-item-edit-modal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="todo-edit-form">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Name</label>
+                        <input id="edit-input-name" type="text" class="form-control" minlength="2" maxlength="255" required/>
+                        <span class="text text-danger validation-msg" style="display: none;"></span>
+                    </div>
+                    <div class="form-group">
+                        <label>Short Description</label>
+                        <textarea id="edit-input-shortDescription" class="form-control" minlength="3" maxlength="65535" required></textarea>
+                        <span class="text text-danger validation-msg" style="display: none;"></span>
+                    </div>
+                    <div class="form-group">
+                        <label>Date</label>
+                        <input id="edit-input-date" type="date" class="form-control" required/>
+                        <span class="text text-danger validation-msg" style="display: none;"></span>
+                    </div>
+                    <div class="form-group">
+                        <label>Time</label>
+                        <input id="edit-input-time" type="time" class="form-control" required/>
+                        <span class="text text-danger validation-msg" style="display: none;"></span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <input id="edit-input-id" type="hidden" />
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

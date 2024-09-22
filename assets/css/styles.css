@@ -1,0 +1,387 @@
+/* sidebar and dashboard start */
+
+.sidebar {
+    background-color: #05005c;
+    /* Dark background for sidebar */
+    color: white;
+    /* White text color */
+    width: 220px;
+    /* Width of the sidebar */
+    padding: 20px;
+    /* Padding inside sidebar */
+    position: fixed;
+    /* Fixed sidebar */
+    height: 100vh;
+    /* Full height */
+    transition: width 0.3s;
+    /* Smooth transition for width */
+    border-right: 1px solid #495057;
+    /* Line to distinguish sidebar sections */
+}
+
+.sidebar.collapsed {
+    width: 60px;
+    /* Minimized width */
+}
+
+.sidebar h2 {
+    font-size: 1.5rem;
+    /* Sidebar header size */
+    margin-bottom: 30px;
+    /* Space below header */
+    transition: opacity 0.3s;
+    /* Smooth transition for opacity */
+}
+
+.sidebar.collapsed h2 {
+    opacity: 0;
+    /* Hide header when minimized */
+}
+
+.sidebar ul {
+    list-style: none;
+    /* Remove bullet points */
+    padding: 0;
+    /* Remove default padding */
+}
+
+.sidebar ul li {
+    padding: 10px;
+    /* Line between the menu items */
+}
+
+.sidebar ul li.border-top {
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    /* Line between the menu items */
+}
+
+.sidebar ul li:last-child {
+    border-bottom: none;
+    /* Remove bottom border for last item */
+}
+
+.sidebar ul li.active {
+    background-color: #FA602D;
+}
+
+.sidebar ul li a {
+    color: white;
+    /* White text color for links */
+    text-decoration: none;
+    /* Remove underline */
+    font-size: 1.1rem;
+    /* Menu item size */
+    display: flex;
+    /* Flexbox for icons and text */
+    align-items: center;
+    /* Center icons vertically */
+}
+
+.sidebar ul li a i {
+    margin-right: 10px;
+    /* Space between icon and text */
+}
+
+.sidebar.collapsed ul li a {
+    justify-content: center;
+    /* Center icons when minimized */
+}
+
+.sidebar.collapsed ul li a span {
+    display: none;
+    /* Hide text when minimized */
+}
+
+.main-content {
+    margin-left: 250px;
+    /* Space for sidebar */
+    padding: 20px;
+    /* Padding for main content */
+    flex-grow: 1;
+    /* Allow main content to grow */
+    transition: margin-left 0.3s;
+    /* Smooth transition for margin */
+}
+
+.main-content.collapsed {
+    margin-left: 60px;
+    /* Adjust margin when sidebar is minimized */
+}
+
+.widget {
+    background-color: #F6F8FF;
+    /* White background for the widgets */
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    position: relative;
+    /* For footer positioning */
+    height: 13em;
+}
+
+.widget h2 {
+    font-size: 2rem;
+    /* Standardized font size */
+    margin-bottom: 10px;
+    font-weight: 500;
+    /* Semi-bold for better readability */
+}
+
+.widget p {
+    font-size: 1rem;
+    /* Standardized font size */
+    margin-bottom: 15px;
+    color: #6c757d;
+    /* Muted color for descriptions */
+}
+
+.widget .icon {
+    font-size: 3rem;
+    /* Size of the icons */
+    color: #FA602D;
+    /* Primary color for icons */
+    margin-bottom: 10px;
+    /* Space between icon and text */
+}
+
+.footer {
+    padding: 10px;
+    /* Padding for footer */
+    background-color: #f0f0f0;
+    /* Less bright background for the footer */
+    border-radius: 0 0 10px 10px;
+    /* Rounded corners at the bottom */
+    position: absolute;
+    /* Positioning to stick to the bottom */
+    bottom: 0;
+    /* Align to the bottom of the widget */
+    left: 0;
+    right: 0;
+    text-align: center;
+    /* Center text in footer */
+}
+
+.footer .link {
+    color: #FA602D;
+    /* Color for the link */
+    text-decoration: none;
+    /* Remove underline */
+    font-weight: 600;
+    /* Bold text for link */
+}
+
+.footer .link:hover {
+    text-decoration: underline;
+    /* Underline on hover for better UX */
+}
+
+.toggle-sidebar {
+    cursor: pointer;
+    /* Pointer cursor for toggle icon */
+    position: absolute;
+    /* Positioning for toggle icon */
+    right: 20px;
+    /* Right alignment */
+    top: 20px;
+    /* Top alignment */
+    color: white;
+    /* Icon color */
+}
+
+/* sidebar and dashboard end */
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    /* font-family: 'Arial', sans-serif; */
+    background-color: #f0f4f8;
+    color: #333;
+}
+
+.container {
+    max-width: 1150px;
+    margin: 20px auto;
+    padding: 20px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.sub-container {
+    max-width: 1150px;
+    margin: 20px auto;
+    padding: 20px;
+    background: #F6F8FF;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+h1 {
+    color: #FA602D;
+}
+
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    /* Space between cards */
+}
+
+.card {
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.card:hover, .temporary-card-hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.temporary-card-hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    background-color: #c3d5e5;
+}
+
+.card-header {
+    background: linear-gradient(135deg, #FA602D 0%, #fc3f00 100%);
+    color: white;
+    padding: 15px;
+    border-radius: 12px 12px 0 0;
+    text-align: center;
+}
+
+.card-header-main-text {
+    font-size: 1.5em;
+}
+
+.card-header-sub-text {
+    font-size: 1.5em;
+    font-style: italic;
+    float: right;
+}
+
+.card-body {
+    padding: 20px;
+}
+
+.todo-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid #eee;
+    margin-bottom: 10px;
+    /* Add space between items */
+}
+
+.todo-item:last-child {
+    border-bottom: none;
+}
+
+.time {
+    font-weight: bold;
+    color: #FA602D;
+    margin-right: 20px;
+    /* Increased space to separate */
+    flex-shrink: 0;
+    /* Prevent shrinking */
+    width: 100px;
+    /* Fixed width for consistent layout */
+}
+
+.name {
+    flex-grow: 1;
+    color: #555;
+    padding: 8px 0;
+    /* Add padding for better spacing */
+    background: #f9f9f9;
+    /* Light background for contrast */
+    border-radius: 5px;
+    /* Rounded corners for the name */
+}
+
+.btn-edit-todo-item {
+    background-color: #FA602D;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    font-size: 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.icon-edit-todo-item {
+    color: #3852da;
+    padding: 5px;
+    cursor: pointer;
+}
+
+.icon-delete-todo-item {
+    color: #ee0d0d;
+    padding: 5px;
+    cursor: pointer;
+}
+
+.btn-delete-todo-item {
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    font-size: 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.edit-button:hover {
+    background-color: #0056b3;
+    transform: translateY(-2px);
+}
+
+footer {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 0.9em;
+}
+
+@media only screen and (max-width: 600px) {
+    .card-grid {
+        display: grid;
+        grid-template-columns: repeat(1, 1fr);
+        /* Space between cards */
+    }
+
+    .edit-button {
+        background-color: #FA602D;
+        color: white;
+        border: none;
+        padding: 8px 12px;
+        font-size: 10px;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background-color 0.3s, transform 0.2s;
+    }
+    
+    .delete-button {
+        color: white;
+        border: none;
+        padding: 8px 12px;
+        font-size: 10px;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background-color 0.3s, transform 0.2s;
+    }
+}
