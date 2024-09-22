@@ -3,6 +3,7 @@ const { TodoItem, sequelize, syncTodoItemTable } = require('../model/todoitem.mo
 const _ = require('lodash');
 const DummyDataHelper = require('../helper/dummydata.helper');
 const ErrorHandleHelper = require('../helper/errorhandle.helper');
+const CustomError = require('../error/CustomError');
 
 module.exports = {
     get: async (req, successcb, errorcb) => {
@@ -29,8 +30,8 @@ module.exports = {
                     FROM tbl_todo_items WHERE id = ${id};
             `, { model: TodoItem, mapToModel: true })
                 .then(resultSet => {
-                    if (!!!resultSet) {
-                        errorcb({ status: 400, message: "Page not found" });
+                    if (resultSet.length == 0) {
+                        errorcb(new CustomError("Not Found", 400));
                         return;
                     }
                     successcb(resultSet[0]);
@@ -44,12 +45,24 @@ module.exports = {
     },
     update: (formBody, successcb, errorcb) => {
         TodoItem.update(formBody, { where: { id: formBody.id } })
-            .then(result => successcb())
+            .then(result => {
+                if(result == 0) {
+                    errorcb(new CustomError("Not Found", 400)); 
+                    return;
+                }
+                successcb();
+            })
             .catch(err => errorcb(ErrorHandleHelper.handleDBError(err)))
     },
     delete: (id, successcb, errorcb) => {
         TodoItem.destroy({ where: { id } })
-            .then(result => successcb(result))
+            .then(result => {
+                if(result == 0) {
+                    errorcb(new CustomError("Not Found", 400)); 
+                    return;
+                }
+                successcb();
+            })
             .catch(err => errorcb(ErrorHandleHelper.handleDBError(err)))
     },
     deleteForDate: (params, successcb, errorcb) => {
