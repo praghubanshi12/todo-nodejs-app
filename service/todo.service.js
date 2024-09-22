@@ -20,7 +20,7 @@ module.exports = {
                         });
                     }).catch(err => errorcb(ErrorHandleHelper.handleDBError(err)))
                 }).catch(err => errorcb(ErrorHandleHelper.handleDBError(err)))
-        }).catch(err => reject(err))
+        }).catch(err => errorcb(ErrorHandleHelper.handleDBError(err)))
     },
     getById: (id, successcb, errorcb) => {
         syncTodoItemTable().then(() => {
@@ -35,7 +35,7 @@ module.exports = {
                     }
                     successcb(resultSet[0]);
                 }).catch(err => errorcb(ErrorHandleHelper.handleDBError(err)))
-        }).catch(err => reject(err))        
+        }).catch(err => errorcb(ErrorHandleHelper.handleDBError(err)))        
     },
     save: (formBody, successcb, errorcb) => {
         TodoItem.bulkCreate(formBody.todoItems, { validate: true })
@@ -124,14 +124,14 @@ const getFilterCountsData = async () => {
             FROM tbl_todo_items;
             `, { type: Sequelize.QueryTypes.SELECT })
             .then(filterCountResultSet => {
-                if (filterCountResultSet.length !== 1) reject(null);
+                if (filterCountResultSet.length !== 1) errorcb(ErrorHandleHelper.handleDBError(null))
                 resolve({
                     all: filterCountResultSet[0].all_count,
                     done: filterCountResultSet[0].done_count,
                     upcoming: filterCountResultSet[0].upcoming_count,
                 })
-            }).catch(err => reject(err))
-        }).catch(err => reject(err))
+            }).catch(err => errorcb(ErrorHandleHelper.handleDBError(err)))
+        }).catch(err => errorcb(ErrorHandleHelper.handleDBError(err)))
     })
 }
 
