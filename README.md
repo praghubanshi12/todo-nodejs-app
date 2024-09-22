@@ -96,5 +96,10 @@ Links available are
 
 ![Screenshot 2024-09-23 012513](https://github.com/user-attachments/assets/516aaf00-7491-4e2b-9387-210f197bdd9d)
 ![Screenshot 2024-09-23 012545](https://github.com/user-attachments/assets/a00f4bbd-bf42-4bf0-82e7-992865755c10)
+![Screenshot 2024-09-23 012607](https://github.com/user-attachments/assets/1831ed35-f666-4c52-af13-075464a1ac5c)
+![Screenshot 2024-09-23 012632](https://github.com/user-attachments/assets/3f2b1900-6703-4ea2-a9a5-a14427917a67)
+![Screenshot 2024-09-23 012756](https://github.com/user-attachments/assets/b0888d69-71ed-4d8f-ad9f-c8ee6aa6db59)
+![Screenshot 2024-09-23 012816](https://github.com/user-attachments/assets/b07c1f5e-f865-4af3-993f-e23f0c89de69)
+![Screenshot 2024-09-23 012842](https://github.com/user-attachments/assets/beb78cea-ee1f-489c-956b-80aea95478dd)
 
 
