@@ -57,7 +57,7 @@ Links available are
 * Error handling
 
 ## Extra Features
-* An option to add dummy data in case of no records in database.
+* An option to add dummy data from dashboard in case of no records in database.
 
 ## API documentation
 
