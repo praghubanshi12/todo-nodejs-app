@@ -32,6 +32,14 @@ A simple app for create, read, update, and delete todo items using NodeJS
   }
 }
 ```
+## System Configuration
+
+* The default port is set to 8081. You can change it from [config.json file](https://github.com/praghubanshi12/todo-nodejs-app/blob/main/config.json) as well
+
+Links available are
+* **Dashboard Page** [http://localhost:8081](http://localhost:8081)
+* **Todo items list** [http://localhost:8081/todo](http://localhost:8081/todo)
+* **Todo items create** [http://localhost:8081/todo/create](http://localhost:8081/todo/create)
 
 ## Main UI Features
 * Create, List pages
