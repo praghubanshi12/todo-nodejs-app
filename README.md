@@ -33,5 +33,22 @@ A simple app for create, read, update, and delete todo items using NodeJS
 }
 ```
 
+## Main UI Features
+* Create, List pages
+* Edit, Delete Popup modals
+* Todo items list filtering by Done, and Upcoming
+* Create single/multiple items for a single date
+* Notifications (sweetalert2) messages
+
+## Technical features used
+* Client / Server side Validation on create, and edit todo items.
+* API Routing
+* Database Schema in MySQL using Serialize JS library
+* MVC Architecture
+* Error handling
+
+## Extra Features
+* An option to add dummy data in case of no records in database.
+
 
 
