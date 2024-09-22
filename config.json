@@ -9,7 +9,7 @@
             "mysql": {
                 "user": "root",
                 "password": "",
-                "dbName": "todo_app"
+                "dbName": "todo_app_pranaya"
             }
         }
     }
