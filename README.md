@@ -62,7 +62,7 @@ Links available are
 ## API documentation
 
 * (GET) http://localhost:8081/api/todo?filter=
-  * filter=/done/upcoming/'' (for all)
+  * filter=done/upcoming
   * **Description** : fetch all todo items 
   * **Response** : {data: Array<{name: string, shortDescription: string, date: date, time: time}>, filterCounts: {all: integer, done: integer, upcoming: integer} }
  
