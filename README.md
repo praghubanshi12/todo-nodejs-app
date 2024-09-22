@@ -91,3 +91,10 @@ Links available are
 * (DELETE) http://localhost:8081/api/todo/deleteForDate/:date
   * **Description** : deleting todo items for specific date
   * **Response** :  {data: Array<{name: string, shortDescription: string, date: date, time: time}>, filterCounts: {all: integer, done: integer, upcoming: integer}, message: string}
+
+## Some screenshots
+
+![Screenshot 2024-09-23 012513](https://github.com/user-attachments/assets/516aaf00-7491-4e2b-9387-210f197bdd9d)
+![Screenshot 2024-09-23 012545](https://github.com/user-attachments/assets/a00f4bbd-bf42-4bf0-82e7-992865755c10)
+
+
