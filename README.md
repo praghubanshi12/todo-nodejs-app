@@ -16,6 +16,22 @@ A simple app for create, read, update, and delete todo items using NodeJS
 
 [config.json file](https://github.com/praghubanshi12/todo-nodejs-app/blob/main/config.json)
 
+> Setup user, password for mysql. And, create database named **todo_app_pranaya**
+```
+{
+  "dev": {
+    ...,
+    "db": {
+        ...,
+        "mysql": {
+            "user": "your_user_name",
+            "password": "your_password",
+            "dbName": "todo_app_pranaya"
+        }
+    }    
+  }
+}
+```
 
 
 
