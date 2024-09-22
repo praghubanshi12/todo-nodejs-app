@@ -59,5 +59,35 @@ Links available are
 ## Extra Features
 * An option to add dummy data in case of no records in database.
 
+## API documentation
 
+* (GET) http://localhost:8081/api/todo?filter=
+  * filter=/done/upcoming/'' (for all)
+  * **Description** : fetch all todo items 
+  * **Response** : {data: Array<{name: string, shortDescription: string, date: date, time: time}>, filterCounts: {all: integer, done: integer, upcoming: integer} }
+ 
+* (GET) http://localhost:8081/api/todo/filterCounts
+  * **Description** : fetch counts for all/done/upcoming todo items
+  * **Response** :  {all: integer, done: integer, upcoming: integer}
 
+* (GET) http://localhost:8081/api/todo/:id
+  * **Description** : fetch todo item details by id
+  * **Response** :  {name: string, shortDescription: string, date: date, time: time}
+
+* (POST) http://localhost:8081/api/todo
+  * **Description** : creating multiple todo items
+  * **FormBody** : Array<{name: string, shortDescription: string, date: date, time: time}>
+  * **Response** :  {message: string}
+ 
+* (PUT) http://localhost:8081/api/todo
+  * **Description** : updating todo item
+  * **FormBody** : Array<{id: biginteger, name: string, shortDescription: string, date: date, time: time}>
+  * **Response** :  {data: Array<{name: string, shortDescription: string, date: date, time: time}>, filterCounts: {all: integer, done: integer, upcoming: integer}, message: string}
+ 
+* (DELETE) http://localhost:8081/api/todo/:id
+  * **Description** : deleting todo item
+  * **Response** :  {data: Array<{name: string, shortDescription: string, date: date, time: time}>, filterCounts: {all: integer, done: integer, upcoming: integer}, message: string}
+ 
+* (DELETE) http://localhost:8081/api/todo/deleteForDate/:date
+  * **Description** : deleting todo items for specific date
+  * **Response** :  {data: Array<{name: string, shortDescription: string, date: date, time: time}>, filterCounts: {all: integer, done: integer, upcoming: integer}, message: string}
